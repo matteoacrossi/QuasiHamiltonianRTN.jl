@@ -2,6 +2,7 @@ module QuasiHamiltonianRTN
 using Expokit # expmv!
 include("SpecialUnitary.jl")
 include("Utilities.jl")
+include("Lattice1D.jl")
 
 export quasiHamiltonian, evolution, bloch_vector, density_operator, localized_state
 

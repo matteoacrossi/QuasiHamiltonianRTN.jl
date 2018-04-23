@@ -1,7 +1,8 @@
 using QuasiHamiltonianRTN
+using QuasiHamiltonianRTN.Lattice1D
 using Combinatorics
-include("..src/SpecialUnitary.jl")
-include("..src/Utilities.jl")
+include("../src/SpecialUnitary.jl")
+include("../src/Utilities.jl")
 
 @static if VERSION < v"0.7.0-DEV.2005"
     using Base.Test
@@ -51,12 +52,14 @@ end
 @testset "Unitary evolution check" begin
     let n = 4
         ρ = random_density_matrix(n)
-        ρ1 = unitary_op(H0(n), 1.)*ρ*unitary_op(H0(n), 1.)'
-        ρ2 = full(density_operator(expm(- full(igen(H0(n)))) * bloch_vector(ρ)))
+        ρ1 = unitary_op(Lattice1D.H0(n), 1.)*ρ*unitary_op(Lattice1D.H0(n), 1.)'
+        ρ2 = full(density_operator(expm(- full(igen(Lattice1D.H0(n)))) * bloch_vector(ρ)))
         @test ρ1 ≈ ρ2
     end
 end
 
 @testset "Noiseless evolution check" begin
-    @test bloch_vector(unitary_op(H0(5), t) * localized_state(5,2) * unitary_op(H0(5), t)') ≈ evolution(Lattice1D(5, .0), bloch_vector(localized_state(5,2)), t, 5, γ=0.)
+    let t = 2.
+        @test bloch_vector(unitary_op(H0(5), t) * localized_state(5,2) * unitary_op(H0(5), t)') ≈ evolution(Hamiltonian(5, .0), bloch_vector(localized_state(5,2)), t, 5, γ=0.)
+    end
 end
