@@ -2,4 +2,4 @@
 
 ## Installation
 
-  Pkg.clone("git://github.com/matteoacrossi/QuasiHamiltonianRTN.jl.git")
+    Pkg.clone("git://github.com/matteoacrossi/QuasiHamiltonianRTN.jl.git")
