@@ -101,11 +101,11 @@ function evolution(Hamiltonian::Function, r0, t, RTN_number; γ=1)
     Nc = 2^RTN_number
 
     rtnstate = ones(Nc)/sqrt(Nc)
-    v = kron(rtnstate, r0)
 
     res = zeros(Nq, length(t))
 
     for ti in 1:length(t)
+        v = kron(rtnstate, r0)
         expmv!(-t[ti], Hq, v)
         #println(v)
         for k = 1:Nq
