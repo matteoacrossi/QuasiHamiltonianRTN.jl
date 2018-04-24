@@ -44,7 +44,9 @@ function quasiHamiltonian(Hamiltonian::Function, RTN_number, γ)
     Nc = 2^RTN_number
     f = structure_constants(n)
     Hq = kron(-Vnoise(RTN_number,γ), speye(n^2-1))
-    Hq += sum([kron(D(n,i), igen(f,Hamiltonian(i))) for i = 1:Nc])
+    for i = 1 : Nc
+        Hq += kron(D(n,i), igen(f, Hamiltonian(i)))
+    end
     return Hq
 end
 
