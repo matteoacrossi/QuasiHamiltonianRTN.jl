@@ -30,7 +30,18 @@ module Lattice1D
         return H
     end
 
-    function Hamiltonian(n, ν, ν0=1.)
+    """
+        Hamiltonian(n, ν, ν0=1.)
+
+    Returns a function Hamiltonian(id) that returns the Hamiltonian with the
+    particular noise configuration `id`.
+
+    # Arguments
+        * `n::Integer`: the dimension of the Hilbert space
+        * `ν::Float`: the strength of the noise
+        * `ν0::Float`: The rate of the noiseless Hamiltonian (ν0 = 1.)
+    """
+    function Hamiltonian(n::Integer, ν::Float64, ν0=1.)
         Hamiltonian(id) = H0(n;ν=ν0) + ν*Hnoise(n, id)
         return Hamiltonian
     end
