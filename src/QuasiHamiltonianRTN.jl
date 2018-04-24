@@ -77,7 +77,7 @@ Evaluates the dynamics of the system in presence of RTN noise with switching
 rate γ, starting from an initial Bloch vector ``\\mathbf{r}_0`` of length
 ``N_Q = N^2-1``, where ``N`` is the dimension of the Hilbert space.
 
-If t is an array of length ``N_T``, returns a ``N_Q × N_T`` array of Bloch vectors
+If t is an array of length ``N_T``, returns an ``N_T`` array of Bloch vectors
 at each time instant.
 
 ## NOTE:
@@ -102,18 +102,20 @@ function evolution(Hamiltonian::Function, r0, t, RTN_number; γ=1)
 
     rtnstate = ones(Nc)/sqrt(Nc)
 
-    res = zeros(Nq, length(t))
-
-    for ti in 1:length(t)
+    res = [
+    begin
+        tmp = zeros(Nq)
         v = kron(rtnstate, r0)
-        expmv!(-t[ti], Hq, v)
+        expmv!(-ti, Hq, v)
         #println(v)
         for k = 1:Nq
             for i = 1:Nc
-                res[k, ti] += rtnstate[i] * v[Nq*(i-1)+k]
+                tmp[k] += rtnstate[i] * v[Nq*(i-1)+k]
             end
         end
+        tmp
     end
+    for ti in t]
     return res
 
 #     y = kron(rtnstate, eye(Nq))

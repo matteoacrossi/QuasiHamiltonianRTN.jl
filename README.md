@@ -6,7 +6,7 @@
 
 ## Example
 
-This example evaluates the 1D lattice 
+This example evaluates the 1D lattice
 
     using QuasiHamiltonianRTN
     using QuasiHamiltonianRTN.Lattice1D
