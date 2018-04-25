@@ -7,15 +7,8 @@ that are Hermitian and traceless.
 function sun_generators(n)
     matrices = [spzeros(Complex128, n, n) for i = 1 : n^2-1]
     i = 1
-    for k = 2:n
-        for j = 1:k-1
-            matrices[i][j, k] = matrices[i][k, j] = 1.
-            i += 1
-            matrices[i][j, k] -= (matrices[i][k, j] = 1im)
-            i += 1
-        end
-    end
 
+    # Diagonal matrices
     for l = 1:n-1
         for j = 1:l
             matrices[i][j, j] = sqrt(2/(l*(l+1)))
@@ -23,6 +16,23 @@ function sun_generators(n)
         matrices[i][l+1, l+1] = -sqrt(2*l/(l+1))
         i += 1
     end
+
+    # Real matrices
+    for k = 2:n
+        for j = 1:k-1
+            matrices[i][j, k] = matrices[i][k, j] = 1.
+            i += 1
+        end
+    end
+
+    # Imaginary matrices
+    for k = 2:n
+        for j = 1:k-1
+            matrices[i][j, k] -= (matrices[i][k, j] = 1im)
+            i += 1
+        end
+    end
+
     return matrices
 end
 
