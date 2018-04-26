@@ -28,3 +28,8 @@ This example evaluates the 1D lattice
     rn = evolution(H, r0, collect(t), n; γ=1.)
 
     imshow([real(diag(density_operator(rn[:,i]))) for i in 1:length(t)], cmap="Blues")
+
+
+## TODO
+* The MATLAB function expmv can evaluate for an equally spaced interval of t at
+  once (using some optimization). Explore the possibility to do the same with `Expokit.jl`
