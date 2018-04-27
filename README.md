@@ -31,5 +31,5 @@ This example evaluates the 1D lattice
 
 
 ## TODO
-* The MATLAB function expmv can evaluate for an equally spaced interval of t at
-  once (using some optimization). Explore the possibility to do the same with `Expokit.jl`
+* The MATLAB function [`expmv`](https://github.com/higham/expmv) can evaluate ``exp(t A)`` for an equally spaced interval of t at
+  once (using some optimization). Explore the possibility to do the same with `Expokit.jl`, or, most probably, extend the code in [ExpmV.jl](https://github.com/marcusps/ExpmV.jl) which is the direct port of `expmv`.
