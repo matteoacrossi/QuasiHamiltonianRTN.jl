@@ -1,5 +1,5 @@
 # QuasiHamiltonianRTN
-
+[![Build Status](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl.svg?branch=master)](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl)
 ## Installation
 
     Pkg.clone("git://github.com/matteoacrossi/QuasiHamiltonianRTN.jl.git")
