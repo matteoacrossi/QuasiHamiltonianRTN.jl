@@ -20,9 +20,14 @@ module StarGraph
     for a specific state of the noise fluctuators specified by `noise_id`.
     """
     function Hnoise(N, noise_id)
-        if noise_id < 1 || noise_id > 2^(N-1)
+        if noise_id < 0 || noise_id > 2^(N-1)
             throw(ArgumentError("noise_id must be between 1 and 2^(N-1)"))
         end
+
+        if noise_id ==0
+            return spzeros(N,N)
+        end
+
         noise = 2 * digits(noise_id - 1, 2, N-1) - 1
 
         H = spzeros(N,N)

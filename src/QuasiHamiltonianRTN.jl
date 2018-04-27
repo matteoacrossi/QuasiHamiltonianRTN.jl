@@ -2,9 +2,11 @@ module QuasiHamiltonianRTN
 using Expokit # expmv!
 include("SpecialUnitary.jl")
 include("Utilities.jl")
-include("Lattice1D.jl")
 
-export quasiHamiltonian, evolution, bloch_vector, density_operator, localized_state
+include("Lattice1D.jl")
+include("StarGraph.jl")
+
+export quasiHamiltonian, quasiHamiltonian2, evolution, bloch_vector, density_operator, localized_state
 
 """
     Vnoise(n, γ)
@@ -43,9 +45,22 @@ function quasiHamiltonian(Hamiltonian::Function, RTN_number, γ)
     n = size(Hamiltonian(1), 1)
     Nc = 2^RTN_number
     f = structure_constants(n)
+    λ = sun_generators(n)
+    Hq = kron(-Vnoise(RTN_number,γ), speye(n^2-1))
+
+    for i = 1 : Nc
+        Hq += kron(D(RTN_number,i), igen(f, λ, Hamiltonian(i)))
+    end
+    return Hq
+end
+
+function quasiHamiltonian_old(Hamiltonian::Function, RTN_number, γ)
+    n = size(Hamiltonian(1), 1)
+    Nc = 2^RTN_number
+    f = structure_constants(n)
     Hq = kron(-Vnoise(RTN_number,γ), speye(n^2-1))
     for i = 1 : Nc
-        Hq += kron(D(n,i), igen(f, Hamiltonian(i)))
+        Hq += kron(D(n,i), igen_old(f, Hamiltonian(i)))
     end
     return Hq
 end
