@@ -60,6 +60,6 @@ end
 
 @testset "Noiseless evolution check" begin
     let t = 2.
-        @test bloch_vector(unitary_op(H0(5), t) * localized_state(5,2) * unitary_op(H0(5), t)') ≈ evolution(Hamiltonian(5, .0), bloch_vector(localized_state(5,2)), t, 5, γ=0.)
+        @test bloch_vector(unitary_op(Lattice1D.H0(5), t) * localized_state(5,2) * unitary_op(Lattice1D.H0(5), t)') ≈ evolution(Lattice1D.Hamiltonian(5, .0), bloch_vector(localized_state(5,2)), t, 5, γ=0.)[1]
     end
 end
