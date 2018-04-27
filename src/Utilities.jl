@@ -33,11 +33,26 @@ function commutator(a, b)
 end
 
 """
-	localized-state(n, i)
+	localized_state(N, i)
 
-Returns the density operator for a state ``|i⟩`` in an `n`-dimensional Hilbert
+Returns the density operator for a state ``|i⟩`` in an ``N``-dimensional Hilbert
 space
 """
 function localized_state(n, i)
    sparse([i,n],[i,n],[1,0])
+end
+
+"""
+    probability_current(ρ, c)
+
+Returns the probability current for the node ``|c ⟩``,
+defined as the expected value of the operator
+``C_c = i\\sum_{j ≠ c}(|c⟩⟨j|+|j⟩⟨c|)``, i. e.
+
+```math
+ \\text{Tr} [C_c ρ] = 2 ∑_{j≠c}ℑ(ρ_{cj})
+```
+"""
+function probability_current(ρ::AbstractArray{Complex128,2}, c::Integer)
+    return 2 * sum(imag(ρ[c,:])) # NOTE: ρ[c,c] is real
 end
