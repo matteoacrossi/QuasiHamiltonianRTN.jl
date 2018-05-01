@@ -1,5 +1,6 @@
 # QuasiHamiltonianRTN
-[![Build Status](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl.svg?branch=master)](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl)
+[![Build Status](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl.svg?branch=master)](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl) [![codecov](https://codecov.io/gh/matteoacrossi/QuasiHamiltonianRTN.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/matteoacrossi/QuasiHamiltonianRTN.jl)
+
 ## Installation
 
     Pkg.clone("git://github.com/matteoacrossi/QuasiHamiltonianRTN.jl.git")
