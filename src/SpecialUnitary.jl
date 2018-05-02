@@ -92,39 +92,15 @@ function igen(H)
 end
 
 """
-    igen(f, H)
+    igen(f, λ, H)
 
 Returns ``i G(H)``, where G is defined in Eq. (11) of Joynt et al., with the
-structure constants tensor `f` that can be evaluated with `structure_constants(n)`
+structure constants tensor `f` that can be evaluated with `structure_constants(n)`,
+and the array of SU(N) generators λ (`sun_generators(n)`).
 
 When providing `f`, the calculations are much faster (especially if many
 generators have to be evaluated).
 """
-function igen(f, H)
-    n = size(H,1)
-    λ = sun_generators(n)
-    result = spzeros(n^2-1, n^2-1)
-    nimag = Int(floor(n*(n-1)/2))
-    ak = zeros(n^2-1)
-    ak[1:end-nimag] = real([trace(H*lambda) for lambda in λ[1:end-nimag]])
-
-    for i = 1:n^2-1
-        @inbounds result[i, :] = f[i] * ak
-    end
-    return result
-end
-
-function igen_old(f, H)
-    n = size(H,1)
-    λ = sun_generators(n)
-    result = spzeros(n^2-1, n^2-1)
-    ak = real([trace(H*lambda) for lambda in λ])
-    for i = 1:n^2-1
-        @inbounds result[i,:]= f[i] * ak
-    end
-    return result
-end
-
 function igen(f, λ, H)
     n = size(H,1)
     #λ = sun_generators(n)
