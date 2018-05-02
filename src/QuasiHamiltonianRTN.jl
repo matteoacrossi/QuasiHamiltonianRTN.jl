@@ -46,10 +46,10 @@ function quasiHamiltonian(Hamiltonian, γ)
     f = structure_constants(n)
     λ = sun_generators(n)
     Hq = kron(-Vnoise(RTN_number,γ), speye(n^2-1))
-
-    for i = 1 : Nc
-        Hq += kron(D(RTN_number,i), igen(f, λ, Hamiltonian[i]))
-    end
+    Hq += blkdiag(map(h -> igen(f,λ,h),Hamiltonian)...)
+    # for i = 1 : Nc
+    #     Hq += kron(D(RTN_number,i), igen(f, λ, Hamiltonian[i]))
+    # end
     return Hq
 end
 
