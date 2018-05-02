@@ -73,9 +73,6 @@ at each time instant.
 Due to the high cost of the construction of the quasi Hamiltonian, it is recommended
 to evaluate the evolution simultaneously for all the time instants.
 """
-#= TODO: Write a function where we pass the quasi Hamiltonian, so that there is no
-        need to use the time vector. This can be useful e.g. in optimization problems
-=#
 function evolution(Hamiltonian, r0::Vector, t; γ=1)
     n = size(Hamiltonian[1], 1)
     Nc = length(Hamiltonian)
@@ -90,23 +87,14 @@ function evolution(Hamiltonian, r0::Vector, t; γ=1)
     rtnstate = ones(Nc)/sqrt(Nc)
 
     v0 = kron(rtnstate, r0)
+    y = kron(rtnstate, eye(Nq))'
     res = [
     begin
         tmp = zeros(Nq)
-        v =  expmv(-ti, Hq, v0)
-        #println(v)
-        for k = 1:Nq
-            for i = 1:Nc
-                tmp[k] += rtnstate[i] * v[Nq*(i-1)+k]
-            end
-        end
-        tmp
+        y * expmv(-ti, Hq, v0)
     end
     for ti in t]
     return res
-
-#     y = kron(rtnstate, eye(Nq))
-#     return y' * v
 end
 
 end # module
