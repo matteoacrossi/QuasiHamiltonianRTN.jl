@@ -39,15 +39,16 @@ The quasi-Hamiltonian is defined as in Eq. (20) of Joynt et al.
 is an integer that goes from `1` to `2^RTN_number`, and returns a particular
 configuration of the fluctuators.
 """
-function quasiHamiltonian(Hamiltonian::Function, RTN_number, γ)
-    n = size(Hamiltonian(1), 1)
-    Nc = 2^RTN_number
+function quasiHamiltonian(Hamiltonian, γ)
+    n = size(Hamiltonian[1], 1)
+    Nc = length(Hamiltonian)
+    RTN_number = Int(log2(Nc))
     f = structure_constants(n)
     λ = sun_generators(n)
     Hq = kron(-Vnoise(RTN_number,γ), speye(n^2-1))
 
     for i = 1 : Nc
-        Hq += kron(D(RTN_number,i), igen(f, λ, Hamiltonian(i)))
+        Hq += kron(D(RTN_number,i), igen(f, λ, Hamiltonian[i]))
     end
     return Hq
 end
@@ -70,23 +71,21 @@ at each time instant.
 
 ## NOTE:
 Due to the high cost of the construction of the quasi Hamiltonian, it is recommended
-to evaluate simultaneously for all the time instants.
+to evaluate the evolution simultaneously for all the time instants.
 """
 #= TODO: Write a function where we pass the quasi Hamiltonian, so that there is no
         need to use the time vector. This can be useful e.g. in optimization problems
 =#
-function evolution(Hamiltonian::Function, r0, t, RTN_number; γ=1)
-    n = size(Hamiltonian(1),1)
-
+function evolution(Hamiltonian, r0::Vector, t; γ=1)
+    n = size(Hamiltonian[1], 1)
+    Nc = length(Hamiltonian)
     Nq = length(r0)
 
     if n^2-1 != Nq
         throw(ArgumentError("Hamiltonian and r0 have incompatible dimensions"))
     end
 
-    Hq = quasiHamiltonian(Hamiltonian, RTN_number, γ)
-
-    Nc = 2^RTN_number
+    Hq = quasiHamiltonian(Hamiltonian, γ)
 
     rtnstate = ones(Nc)/sqrt(Nc)
 

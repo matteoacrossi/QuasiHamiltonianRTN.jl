@@ -38,18 +38,16 @@ module StarGraph
     end
 
     """
-        Hamiltonian(n, ν, ν0=1.)
+        Hamiltonian(N, ν, ν0=1.)
 
-    Returns a function Hamiltonian(id) that returns the Hamiltonian with the
-    particular noise configuration `id`.
+    Returns an array of Hamiltonians for all possible configurations of the noise
 
     # Arguments
-        * `n::Integer`: the dimension of the Hilbert space
+        * `N::Integer`: the dimension of the Hilbert space
         * `ν::Float`: the strength of the noise
         * `ν0::Float`: The rate of the noiseless Hamiltonian (ν0 = 1.)
     """
-    function Hamiltonian(n::Integer, ν::Float64, ν0=1.)
-        Hamiltonian(id) = H0(n;ν=ν0) + ν*Hnoise(n, id)
-        return Hamiltonian
+    function Hamiltonian(N::Integer, ν::Float64, ν0=1.)
+        return [H0(N;ν=ν0) + ν*Hnoise(N, id) for id = 1:2^(N-1)]
     end
 end
