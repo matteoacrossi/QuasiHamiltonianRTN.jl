@@ -39,8 +39,6 @@ The quasi-Hamiltonian is defined as in Eq. (20) of Joynt et al.
 is an integer that goes from `1` to `2^RTN_number`, and returns a particular
 configuration of the fluctuators.
 """
-#TODO: store a cache of structure constants (they don't use lots of space and
-#      would save computational time)
 function quasiHamiltonian(Hamiltonian::Function, RTN_number, γ)
     n = size(Hamiltonian(1), 1)
     Nc = 2^RTN_number
@@ -53,33 +51,6 @@ function quasiHamiltonian(Hamiltonian::Function, RTN_number, γ)
     end
     return Hq
 end
-
-function quasiHamiltonian_old(Hamiltonian::Function, RTN_number, γ)
-    n = size(Hamiltonian(1), 1)
-    Nc = 2^RTN_number
-    f = structure_constants(n)
-    Hq = kron(-Vnoise(RTN_number,γ), speye(n^2-1))
-    for i = 1 : Nc
-        Hq += kron(D(n,i), igen_old(f, Hamiltonian(i)))
-    end
-    return Hq
-end
-
-# TODO: write more general version where we pass H0, Hnoise and the number of
-# noise configurations
-# function quasiHamiltonian(n, γ, ν)
-#     f = structure_constants(n)
-#     Hq = kron(-Vnoise(n,γ), speye(n^2-1))
-#     Hq .+= kron(speye(2^n), igen(f,H0(n)))
-#     Hq .+= ν * sum([kron(D(n,i), igen(f,Hn(n,i))) for i = 1:2^n])
-#     return Hq
-# end
-#
-# function quasiHamiltonian_old(n, γ, ν)
-#     return kron(-Vnoise(n,γ), speye(n^2-1)) +
-#         kron(speye(2^n), igen(H0(n))) +
-#         ν * sum([kron(D(n,i), igen(Hnoise(n,i))) for i = 1:2^n])
-# end
 
 function D(n,i)
     D = spzeros(2^n,2^n)
