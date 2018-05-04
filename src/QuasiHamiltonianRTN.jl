@@ -1,5 +1,6 @@
 module QuasiHamiltonianRTN
-using Expokit # expmv!
+using Expokit # expmv
+using ExpmV
 include("SpecialUnitary.jl")
 include("Utilities.jl")
 
@@ -73,7 +74,7 @@ at each time instant.
 Due to the high cost of the construction of the quasi Hamiltonian, it is recommended
 to evaluate the evolution simultaneously for all the time instants.
 """
-function evolution(Hamiltonian, r0::Vector, t; γ=1)
+function evolution2(Hamiltonian, r0::Vector, t; γ=1)
     n = size(Hamiltonian[1], 1)
     Nc = length(Hamiltonian)
     Nq = length(r0)
@@ -87,14 +88,55 @@ function evolution(Hamiltonian, r0::Vector, t; γ=1)
     rtnstate = ones(Nc)/sqrt(Nc)
 
     v0 = kron(rtnstate, r0)
-    y = kron(rtnstate, eye(Nq))'
+    y = kron(rtnstate, speye(Nq))'
     res = [
     begin
-        tmp = zeros(Nq)
-        y * expmv(-ti, Hq, v0)
+        y * Expokit.expmv(-ti, Hq, v0)
     end
     for ti in t]
     return res
 end
 
+function evolution(Hamiltonian, r0::Vector, t::StepRangeLen; γ=1)
+    n = size(Hamiltonian[1], 1)
+    Nc = length(Hamiltonian)
+    Nq = length(r0)
+
+    if n^2-1 != Nq
+        throw(ArgumentError("Hamiltonian and r0 have incompatible dimensions"))
+    end
+
+    Hq = quasiHamiltonian(Hamiltonian, γ)
+
+    rtnstate = ones(Nc)/sqrt(Nc)
+
+    v0 = kron(rtnstate, r0)
+    y = kron(rtnstate, speye(Nq))'
+    res = y * ExpmV.expmv(-t, Hq, v0)
+
+    return [res[:,i] for i = 1:size(res,2)]
+end
+
+function evolution3(Hamiltonian, r0::Vector, t; γ=1)
+    n = size(Hamiltonian[1], 1)
+    Nc = length(Hamiltonian)
+    Nq = length(r0)
+
+    if n^2-1 != Nq
+        throw(ArgumentError("Hamiltonian and r0 have incompatible dimensions"))
+    end
+
+    Hq = quasiHamiltonian(Hamiltonian, γ)
+
+    rtnstate = ones(Nc)/sqrt(Nc)
+
+    v0 = kron(rtnstate, r0)
+    y = kron(rtnstate, speye(Nq))'
+    res = [
+    begin
+        y * ExpmV.expmv(-ti, Hq, v0)
+    end
+    for ti in t]
+    return hcat(res...)
+end
 end # module
