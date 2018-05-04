@@ -47,12 +47,13 @@ end
 
 Returns the probability current for the node ``|c ⟩``,
 defined as the expected value of the operator
+
 ``C_c = i\\sum_{j ≠ c}(|j⟩⟨c| - |c⟩⟨j|)``, i. e.
 
 ```math
- \\text{Tr} [C_c ρ] = 2 ∑_{j≠c}ℑ(ρ_{cj})
+ \\text{Tr} [C_c ρ] = - 2 ∑_{j≠c}ℑ(ρ_{cj})
 ```
 """
 function probability_current(ρ::AbstractArray{Complex128,2}, c::Integer)
-    return 2 * sum(imag(ρ[c,:])) # NOTE: ρ[c,c] is real
+    return - 2 * sum(imag(ρ[c,:])) # NOTE: ρ[c,c] is real
 end
