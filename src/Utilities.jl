@@ -56,6 +56,6 @@ where the sum is over the neighbors of the node ``|c⟩``.
  \\text{Tr} [C_c ρ] = - 2 ∑_{j≠c}ℑ(A_{cj}ρ_{cj})
 ```
 """
-function probability_current(ρ::AbstractArray{Complex128,2}, A::Matrix, c::Integer)
-    return - 2 * imag(A[c,:] * ρ[c,:]) # NOTE: ρ[c,c] is real
-end
+# function probability_current(ρ::AbstractArray{Complex128,2}, A::Matrix, c::Integer)
+#     return - 2 * imag(A[c,:] * ρ[c,:]) # NOTE: ρ[c,c] is real
+# end
