@@ -43,17 +43,19 @@ function localized_state(n, i)
 end
 
 """
-    probability_current(ρ, c)
+    probability_current(ρ, A, c)
 
 Returns the probability current for the node ``|c ⟩``,
 defined as the expected value of the operator
 
-``C_c = i\\sum_{j ≠ c}(|j⟩⟨c| - |c⟩⟨j|)``, i. e.
+``C_c = i\\sum_{⟨j,c⟩}(|j⟩⟨c| - |c⟩⟨j|)``,
+
+where the sum is over the neighbors of the node ``|c⟩``.
 
 ```math
- \\text{Tr} [C_c ρ] = - 2 ∑_{j≠c}ℑ(ρ_{cj})
+ \\text{Tr} [C_c ρ] = - 2 ∑_{j≠c}ℑ(A_{cj}ρ_{cj})
 ```
 """
-function probability_current(ρ::AbstractArray{Complex128,2}, c::Integer)
-    return - 2 * sum(imag(ρ[c,:])) # NOTE: ρ[c,c] is real
+function probability_current(ρ::AbstractArray{Complex128,2}, A::SymmetricMatrix, c::Integer)
+    return - 2 * imag(A[c,:] * ρ[c,:]) # NOTE: ρ[c,c] is real
 end
