@@ -59,3 +59,15 @@ where the sum is over the neighbors of the node ``|c⟩``.
 function probability_current(ρ::AbstractArray{Complex128,2}, A, c::Integer)
     return - 2 * imag(A[c,:] * ρ[c,:]) # NOTE: ρ[c,c] is real
 end
+
+
+function partial_inner_product(A, Nc, Nq)
+    u = ones(Nc) / sqrt(Nc)
+    M = zeros(Nq, Nq)
+    for i=1:Nq
+        for j = 1:Nq
+            M[i,j] = kron(u, eye(Nq)[:,i])' * A * kron(u, eye(Nq)[:,j])
+        end
+    end
+    return M
+end
