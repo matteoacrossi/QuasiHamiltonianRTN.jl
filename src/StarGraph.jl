@@ -31,7 +31,7 @@ module StarGraph
         noise = 2 * digits(noise_id - 1, 2, N-1) - 1
 
         H = spzeros(N,N)
-        H[1,2:end] = noise
+        H[1, 2:end] = noise
         H = H + H'
         H = spdiagm(sum(H,1)[:]) - H
         return H
@@ -49,5 +49,18 @@ module StarGraph
     """
     function Hamiltonian(N::Integer, ν::Float64, ν0=1.)
         return [H0(N;ν=ν0) + ν*Hnoise(N, id) for id = 1:2^(N-1)]
+    end
+
+    function H0_spatial_search(N; ν=1., target::Int=1)
+        H = spzeros(N,N)
+        H[1,2:end] = ν
+        H = H + H'
+        H = spdiagm(sum(H,1)[:]) - H
+        H[target,target] = -1.
+        return H
+    end
+
+    function Hamiltonian_spatial_search(N::Integer, ν::Float64; ν0=.3, target::Int=1)
+        return [H0_spatial_search(N;ν=ν0) + ν*Hnoise(N, id) for id = 1:2^(N-1)]
     end
 end
