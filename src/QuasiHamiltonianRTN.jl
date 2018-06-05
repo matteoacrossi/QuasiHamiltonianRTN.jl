@@ -74,7 +74,7 @@ at each time instant.
 Due to the high cost of the construction of the quasi Hamiltonian, it is recommended
 to evaluate the evolution simultaneously for all the time instants.
 """
-function evolution(Hamiltonian, r0::Vector, t::StepRangeLen; γ=1)
+function evolution(Hamiltonian, r0::Vector, t; γ=1)
     n = size(Hamiltonian[1], 1)
     Nc = length(Hamiltonian)
     Nq = length(r0)
