@@ -16,7 +16,7 @@ This example evaluates the 1D lattice
     n = 10
     r0 = bloch_vector(localized_state(n,floor((n+1)/2)))
 
-    t = linspace(0, 10, 100)
+    t = range(0, stop=10, length=100)
 
     # Noiseless qw
     H = Lattice1D.Hamiltonian(n, 0.)

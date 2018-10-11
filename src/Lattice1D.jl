@@ -1,4 +1,5 @@
 module Lattice1D
+    using SparseArrays
     export H0, Hnoise, Hamiltonian
     """
         H0(N; ϵ=0., ν=1.)
@@ -7,7 +8,7 @@ module Lattice1D
     self-energy ``\\epsilon`` and tunneling constant ``\\nu``.
     """
     function H0(n; ϵ=0., ν=1.)
-        H = spdiagm((ϵ*ones(n), ν*ones(n-1), ν*ones(n-1)),(0,1,-1))
+        H = spdiagm(0 => ϵ*ones(n), 1=>ν*ones(n-1), -1=> ν*ones(n-1))
         if n > 2
             H[1,end] = H[end,1] = ν
         end
@@ -24,8 +25,8 @@ module Lattice1D
         if noise_id < 1 || noise_id > 2^n
             throw(ArgumentError("noise_id must be between 1 and 2^n"))
         end
-        noise = 2 * digits(noise_id - 1, 2, n)-1
-        H = spdiagm((noise[2:end], noise[2:end]), (-1,1))
+        noise = 2 * digits(noise_id .- 1, base=2, pad=n) .- 1
+        H = spdiagm(-1 => noise[2:end], 1 => noise[2:end])
         H[1, end] = H[end, 1] = noise[1]
         return H
     end

@@ -9,7 +9,7 @@ module StarGraph
         H = spzeros(N,N)
         H[1,2:end] = ν
         H = H + H'
-        H = spdiagm(sum(H,1)[:]) - H
+        H = spdiagm(0 => sum(H,1)[:]) - H
         return H
     end
 
@@ -28,12 +28,12 @@ module StarGraph
             return spzeros(N,N)
         end
 
-        noise = 2 * digits(noise_id - 1, 2, N-1) - 1
+        noise = 2 * digits(noise_id - 1, base=2, pad=N-1) - 1
 
         H = spzeros(N,N)
         H[1, 2:end] = noise
         H = H + H'
-        H = spdiagm(sum(H,1)[:]) - H
+        H = spdiagm(0 => sum(H,1)[:]) - H
         return H
     end
 
@@ -55,7 +55,7 @@ module StarGraph
         H = spzeros(N,N)
         H[1,2:end] = ν
         H = H + H'
-        H = spdiagm(sum(H,1)[:]) - H
+        H = spdiagm(0 => sum(H,1)[:]) - H
         H[target,target] = -1.
         return H
     end

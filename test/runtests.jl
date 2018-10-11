@@ -1,6 +1,9 @@
 using QuasiHamiltonianRTN
 using QuasiHamiltonianRTN.Lattice1D
 using Combinatorics
+using SparseArrays
+using LinearAlgebra
+
 include("../src/SpecialUnitary.jl")
 include("../src/Utilities.jl")
 
@@ -12,8 +15,8 @@ end
 
 @testset "SU(N) generators" begin
     @testset "N = $N" for N = 20:21
-        @testset "Traceless" begin
-            @test mapreduce(A -> isapprox(trace(A), 0., atol=eps(Float64) * N), &, sun_generators(N))
+        @testset "trless" begin
+            @test mapreduce(A -> isapprox(tr(A), 0., atol=eps(Float64) * N), &, sun_generators(N))
         end
         # Hermitian
         @testset "Hermitian" begin
@@ -22,7 +25,7 @@ end
         # Orthogonal
         @testset "Orthogonal" begin
             @test let λ = sun_generators(N)
-                [trace(λ[i] * λ[j]) for i = 1:length(λ), j = 1:length(λ)] ≈ 2*eye(N^2-1)
+                [tr(λ[i] * λ[j]) for i = 1:length(λ), j = 1:length(λ)] ≈ 2*I
              end
         end
     end
@@ -44,7 +47,7 @@ end
     @testset "Back and forth" begin
         for n = 2:10
             ρ = random_density_matrix(n)
-            @test full(density_operator(bloch_vector(ρ))) ≈ ρ
+            @test Matrix(density_operator(bloch_vector(ρ))) ≈ ρ
         end
     end
 end
@@ -53,13 +56,13 @@ end
     let n = 4
         ρ = random_density_matrix(n)
         ρ1 = unitary_op(Lattice1D.H0(n), 1.)*ρ*unitary_op(Lattice1D.H0(n), 1.)'
-        ρ2 = full(density_operator(expm(- full(igen(Lattice1D.H0(n)))) * bloch_vector(ρ)))
+        ρ2 = Matrix(density_operator(exp(- Matrix(igen(Lattice1D.H0(n)))) * bloch_vector(ρ)))
         @test ρ1 ≈ ρ2
     end
 end
 
 @testset "Noiseless evolution check" begin
-    let tv = linspace(0, 5, 10), n = 5, ρ0 = localized_state(n, 3)
+    let tv = range(0, stop=5, length=10), n = 5, ρ0 = localized_state(n, 3)
         rtU = [bloch_vector(unitary_op(Lattice1D.H0(n), t) * ρ0 * unitary_op(Lattice1D.H0(n), t)') for t in tv]
         rtE = evolution(Lattice1D.Hamiltonian(n, .0), bloch_vector(ρ0), tv, γ=0.)
         @test rtU ≈ rtE
