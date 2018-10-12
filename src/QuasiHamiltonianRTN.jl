@@ -63,7 +63,7 @@ function D(n,i)
 end
 
 """
-    evolution(H, r0, t; [γ = 1])
+    evolution(Hq, r0, t; [γ = 1])
 
 Evaluates the dynamics of the system in presence of RTN noise with switching
 rate γ, starting from an initial Bloch vector ``\\mathbf{r}_0`` of length
@@ -71,12 +71,24 @@ rate γ, starting from an initial Bloch vector ``\\mathbf{r}_0`` of length
 
 If t is an array of length ``N_T``, returns an ``N_T`` array of Bloch vectors
 at each time instant.
-
-## NOTE:
-Due to the high cost of the construction of the quasi Hamiltonian, it is recommended
-to evaluate the evolution simultaneously for all the time instants.
 """
-function evolution(Hamiltonian, r0::Vector, t; γ=1)
+function evolution(Hq::SparseMatrixCSC, r0::Vector, t; γ=1)
+    n = size(Hq, 1)
+    # n = Nc * Nq
+    Nq = length(r0)
+    Nc = Int(n / Nq)
+
+    rtnstate = ones(Nc)/sqrt(Nc)
+
+    v0 = kron(rtnstate, r0)
+    y = kron(rtnstate, sparse(1.0I, Nq, Nq))'
+    res = y * ExpmV.expmv(-t, Hq, v0)
+
+    return [res[:,i] for i = 1:size(res,2)]
+end
+
+function evolution(Hamiltonian::Array{SparseMatrixCSC{Float64,Int64},1},
+            r0::Vector, t; γ=1)
     n = size(Hamiltonian[1], 1)
     Nc = length(Hamiltonian)
     Nq = length(r0)
@@ -87,14 +99,9 @@ function evolution(Hamiltonian, r0::Vector, t; γ=1)
 
     Hq = quasiHamiltonian(Hamiltonian, γ)
 
-    rtnstate = ones(Nc)/sqrt(Nc)
-
-    v0 = kron(rtnstate, r0)
-    y = kron(rtnstate, sparse(1.0I, Nq, Nq))'
-    res = y * ExpmV.expmv(-t, Hq, v0)
-
-    return [res[:,i] for i = 1:size(res,2)]
+    return evolution(Hq, r0, t; γ=γ)
 end
+
 
 function evolution2(Hamiltonian, r0::Vector, t; γ=1)
     n = size(Hamiltonian[1], 1)
