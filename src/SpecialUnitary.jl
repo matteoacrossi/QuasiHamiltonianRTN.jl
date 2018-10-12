@@ -2,10 +2,10 @@
     sun_generators(n)
 
 Returns an array of sparse ``n \\times n`` generators of ``SU(N)``
-that are Hermitian and traceless.
+that are Hermitian and trless.
 """
 function sun_generators(n)
-    matrices = [spzeros(Complex128, n, n) for i = 1 : n^2-1]
+    matrices = [spzeros(ComplexF64, n, n) for i = 1 : n^2-1]
     i = 1
 
     # Diagonal matrices
@@ -48,7 +48,7 @@ vector of real values. We follow the formula
 function bloch_vector(ρ)
    n = size(ρ)[1]
    λ = sun_generators(n)
-   sqrt(n)/2*real([trace(λ[i] * ρ) for i = 1: length(λ)])
+   sqrt(n)/2*real([tr(λ[i] * ρ) for i = 1: length(λ)])
 end
 
 """
@@ -81,7 +81,7 @@ function igen(H)
     result = spzeros(n^2-1, n^2-1)
     for i = 1:n^2-1
         for j = i+1:n^2-1
-            tmp = imag(0.5 * trace(commutator(λ[i],λ[j])*H))
+            tmp = imag(0.5 * tr(commutator(λ[i],λ[j])*H))
             if tmp != 0
                 @inbounds result[i,j] = tmp
                 @inbounds result[j,i] = -tmp
@@ -107,7 +107,7 @@ function igen(f, λ, H)
     result = spzeros(n^2-1, n^2-1)
     nimag = Int(floor(n*(n-1)/2))
     ak = zeros(n^2-1)
-    ak[1:end-nimag] = real([trace(H*lambda) for lambda in λ[1:end-nimag]])
+    ak[1:end-nimag] = real([tr(H*lambda) for lambda in λ[1:end-nimag]])
 
     for i = 1:n^2-1
         @inbounds result[i, :] = f[i] * ak
@@ -126,11 +126,11 @@ a real value.
 """
 function structure_constants(n)
     lambda = QuasiHamiltonianRTN.sun_generators(n)
-    f = cat(3, [spzeros(n^2-1,n^2-1) for i = 1:n^2-1])
+    f = cat([spzeros(n^2-1,n^2-1) for i = 1:n^2-1], dims=3)
     for i = 1:n^2-1
         for j = i+1:n^2-1
             for k = j+1:n^2-1
-                @inbounds tmp = 1/4*imag(trace(QuasiHamiltonianRTN.commutator(lambda[i],lambda[j])*lambda[k]))
+                @inbounds tmp = 1/4*imag(tr(QuasiHamiltonianRTN.commutator(lambda[i],lambda[j])*lambda[k]))
                 if tmp != 0
                     @inbounds f[i][j,k] +=  tmp
                     @inbounds f[i][k,j] -=  tmp

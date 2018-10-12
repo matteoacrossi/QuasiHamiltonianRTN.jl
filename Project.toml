@@ -1,0 +1,13 @@
+name = "QuasiHamiltonianRTN"
+uuid = "3a6a1b40-cd69-11e8-2fdf-a7adf2caada3"
+authors = ["Matteo Rossi <teo.red90@gmail.com>"]
+version = "0.1.0"
+license = "MIT"
+
+[deps]
+Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
+ExpmV = "a3781d3e-2c8e-5597-8496-846d69e16182"
+Expokit = "a1e7a1ef-7a5d-5822-a38c-be74e1bb89f4"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

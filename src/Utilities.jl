@@ -11,7 +11,7 @@ For more details see [V Al Osipov et al 2010 J. Phys. A: Math. Theor. 43 055302]
 function random_density_matrix(n)
     A = randn(n,n) + 1im * randn(n,n)
     rho = A * A'
-    return rho / trace(rho)
+    return rho / tr(rho)
 end
 
 """
@@ -20,7 +20,7 @@ end
 Returns the unitary evolution operator ``U = \\exp[-i H t]``.
 """
 function unitary_op(H, t)
-   return expm(-1im * full(H) * t)
+   return exp(-1im * Matrix(H) * t)
 end
 
 """
@@ -56,7 +56,7 @@ where the sum is over the neighbors of the node ``|c⟩``.
  \\text{Tr} [C_c ρ] = - 2 ∑_{j≠c}ℑ(A_{cj}ρ_{cj})
 ```
 """
-function probability_current(ρ::AbstractArray{Complex128,2}, A, c::Integer)
+function probability_current(ρ::AbstractArray{ComplexF64,2}, A, c::Integer)
     return - 2 * imag(A[c,:] * ρ[c,:]) # NOTE: ρ[c,c] is real
 end
 
@@ -64,9 +64,10 @@ end
 function partial_inner_product(A, Nc, Nq)
     u = ones(Nc) / sqrt(Nc)
     M = zeros(Nq, Nq)
+	Id = Matrix{Float64}(I, Nq, Nq)
     for i=1:Nq
         for j = 1:Nq
-            M[i,j] = kron(u, eye(Nq)[:,i])' * A * kron(u, eye(Nq)[:,j])
+            M[i,j] = kron(u, Id[:,i])' * A * kron(u, Id[:,j])
         end
     end
     return M

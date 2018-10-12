@@ -1,6 +1,9 @@
 module QuasiHamiltonianRTN
 using Expokit # expmv
 using ExpmV
+using SparseArrays
+using LinearAlgebra
+
 include("SpecialUnitary.jl")
 include("Utilities.jl")
 
@@ -20,7 +23,7 @@ function Vnoise(n, γ)
     V = sparse([-γ γ; γ -γ])
 
     function Vi(i)
-        foldl(kron, [j == i ? V : speye(2) for j = 1:n])
+        foldl(kron, [j == i ? V : sparse(1.0I, 2, 2) for j = 1:n])
     end
 
     sum([Vi(i) for i = 1:n])
@@ -46,8 +49,8 @@ function quasiHamiltonian(Hamiltonian, γ)
     RTN_number = Int(log2(Nc))
     f = structure_constants(n)
     λ = sun_generators(n)
-    Hq = kron(-Vnoise(RTN_number,γ), speye(n^2-1))
-    Hq += blkdiag(map(h -> igen(f,λ,h),Hamiltonian)...)
+    Hq = kron(-Vnoise(RTN_number,γ), sparse(1.0I, n^2-1, n^2-1))
+    Hq += blockdiag(map(h -> igen(f,λ,h),Hamiltonian)...)
     # for i = 1 : Nc
     #     Hq += kron(D(RTN_number,i), igen(f, λ, Hamiltonian[i]))
     # end
@@ -88,7 +91,7 @@ function evolution(Hamiltonian, r0::Vector, t; γ=1)
     rtnstate = ones(Nc)/sqrt(Nc)
 
     v0 = kron(rtnstate, r0)
-    y = kron(rtnstate, speye(Nq))'
+    y = kron(rtnstate, sparse(1.0I, Nq, Nq))'
     res = y * ExpmV.expmv(-t, Hq, v0)
 
     return [res[:,i] for i = 1:size(res,2)]
@@ -108,7 +111,7 @@ function evolution2(Hamiltonian, r0::Vector, t; γ=1)
     rtnstate = ones(Nc)/sqrt(Nc)
 
     v0 = kron(rtnstate, r0)
-    y = kron(rtnstate, speye(Nq))'
+    y = kron(rtnstate, sparse(1.0I, Nq, Nq))'
     res = [
     begin
         y * Expokit.expmv(-ti, Hq, v0)
@@ -131,7 +134,7 @@ function evolution3(Hamiltonian, r0::Vector, t; γ=1)
     rtnstate = ones(Nc)/sqrt(Nc)
 
     v0 = kron(rtnstate, r0)
-    y = kron(rtnstate, speye(Nq))'
+    y = kron(rtnstate, sparse(1.0I, Nq, Nq))'
     res = [
     begin
         y * ExpmV.expmv(-ti, Hq, v0)
