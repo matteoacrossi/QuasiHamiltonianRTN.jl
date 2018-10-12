@@ -10,7 +10,7 @@ include("Utilities.jl")
 include("Lattice1D.jl")
 include("StarGraph.jl")
 
-export quasiHamiltonian, quasiHamiltonian2, evolution, bloch_vector, density_operator, localized_state
+export quasiHamiltonian, evolution, bloch_vector, density_operator, localized_state
 
 """
     Vnoise(n, γ)
