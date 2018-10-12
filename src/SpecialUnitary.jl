@@ -124,13 +124,13 @@ of ``SU(N)``, defined as ``f_{ijk} = - 2 i \\text{Tr}([λ_i,λ_j]λ_k)``.
 Notice that the true definition has a factor ``-i``, which we avoid to store only
 a real value.
 """
-function structure_constants(n)
+function structure_constants(n)::Array{SparseArrays.SparseMatrixCSC{Float64,Int64},3}
     lambda = sun_generators(n)
-    f = cat([spzeros(n^2-1,n^2-1) for i = 1:n^2-1], dims=3)
+    f = cat([spzeros(Float64, n^2-1,n^2-1) for i = 1:n^2-1], dims=3)
     for i = 1:n^2-1
         for j = i+1:n^2-1
             for k = j+1:n^2-1
-                @inbounds tmp = 1/4*imag(tr(commutator(lambda[i],lambda[j])*lambda[k]))
+                @inbounds tmp::Float64 = 1. / 4. * imag(tr(commutator(lambda[i],lambda[j])*lambda[k]))
                 if tmp != 0
                     @inbounds f[i][j,k] +=  tmp
                     @inbounds f[i][k,j] -=  tmp
