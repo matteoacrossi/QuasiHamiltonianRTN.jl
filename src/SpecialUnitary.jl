@@ -125,12 +125,12 @@ Notice that the true definition has a factor ``-i``, which we avoid to store onl
 a real value.
 """
 function structure_constants(n)
-    lambda = QuasiHamiltonianRTN.sun_generators(n)
+    lambda = sun_generators(n)
     f = cat([spzeros(n^2-1,n^2-1) for i = 1:n^2-1], dims=3)
     for i = 1:n^2-1
         for j = i+1:n^2-1
             for k = j+1:n^2-1
-                @inbounds tmp = 1/4*imag(tr(QuasiHamiltonianRTN.commutator(lambda[i],lambda[j])*lambda[k]))
+                @inbounds tmp = 1/4*imag(tr(commutator(lambda[i],lambda[j])*lambda[k]))
                 if tmp != 0
                     @inbounds f[i][j,k] +=  tmp
                     @inbounds f[i][k,j] -=  tmp
