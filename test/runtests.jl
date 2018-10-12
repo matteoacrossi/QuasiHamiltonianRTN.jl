@@ -66,5 +66,10 @@ end
         rtU = [bloch_vector(unitary_op(Lattice1D.H0(n), t) * ρ0 * unitary_op(Lattice1D.H0(n), t)') for t in tv]
         rtE = evolution(Lattice1D.Hamiltonian(n, .0), bloch_vector(ρ0), tv, γ=0.)
         @test rtU ≈ rtE
+
+        Hq = quasiHamiltonian(Lattice1D.Hamiltonian(n, .0))
+        rtEHq = evolution(Hq, bloch_vector(ρ0), tv, γ=0.)
+
+        @test rtEHq ≈ rtE
     end
 end
