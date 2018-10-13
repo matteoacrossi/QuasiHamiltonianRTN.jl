@@ -67,7 +67,7 @@ end
         rtE = evolution(Lattice1D.Hamiltonian(n, .0), bloch_vector(ρ0), tv, γ=0.)
         @test rtU ≈ rtE
 
-        Hq = quasiHamiltonian(Lattice1D.Hamiltonian(n, .0))
+        Hq = quasiHamiltonian(Lattice1D.Hamiltonian(n, .0,), 0.)
         rtEHq = evolution(Hq, bloch_vector(ρ0), tv, γ=0.)
 
         @test rtEHq ≈ rtE
