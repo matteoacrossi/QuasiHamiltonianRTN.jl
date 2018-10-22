@@ -15,17 +15,17 @@ end
 
 @testset "SU(N) generators" begin
     @testset "N = $N" for N = 20:21
-        @testset "trless" begin
-            @test mapreduce(A -> isapprox(tr(A), 0., atol=eps(Float64) * N), &, sun_generators(N))
-        end
-        # Hermitian
-        @testset "Hermitian" begin
-            @test mapreduce(A -> A ≈ A', &, sun_generators(N))
-        end
-        # Orthogonal
-        @testset "Orthogonal" begin
-            @test let λ = sun_generators(N)
-                [tr(λ[i] * λ[j]) for i = 1:length(λ), j = 1:length(λ)] ≈ 2*I
+        let λ = sun_generators(N)
+            @testset "trless" begin
+                @test mapreduce(A -> isapprox(tr(A), 0., atol=eps(Float64) * N), &, λ)
+            end
+            # Hermitian
+            @testset "Hermitian" begin
+                @test mapreduce(A -> A ≈ A', &, λ)
+            end
+            # Orthogonal
+            @testset "Orthogonal" begin
+                @test [tr(λ[i] * λ[j]) for i = 1:length(λ), j = 1:length(λ)] ≈ 2*I
              end
         end
     end
