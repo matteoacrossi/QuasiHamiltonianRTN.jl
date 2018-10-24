@@ -17,7 +17,13 @@ export quasiHamiltonian, evolution, bloch_vector, density_operator, localized_st
 
 Returns the generator ``V`` for the transition probabilities
 between the various noise configurations for `n` fluctuators,
-with switching rate ``\\gamma``
+with switching rate ``\\gamma``.
+
+It is defined as
+
+``\\mathbf{V} = \\sum_{i=1}^N \\mathbf{V}_\\gamma^{(i)}``
+
+with ``\\mathbf{V}_\\gamma^{(i)} = \\mathbf{I}_2^{\\otimes i-1} \\otimes \\mathbf{V}_\\gamma \\otimes \\mathbf{I}_2^{\\otimes N-i}``.
 """
 function Vnoise(n, γ)
     V = sparse([-γ γ; γ -γ])
@@ -37,11 +43,14 @@ function `H` affected by a number `RTN_number` of RTN fluctuators with switching
 rate γ.
 
 The quasi-Hamiltonian is defined as in Eq. (20) of Joynt et al.
+This function returns ``-i H_q``, in order to deal with real matrices instead of
+imaginary ones.
 
 ## Arguments
-`Hamiltonian::Function`: H is a function of the type `Hamiltonian(i)`, where `i`
-is an integer that goes from `1` to `2^RTN_number`, and returns a particular
-configuration of the fluctuators.
+
+* `Hamiltonian` is an array of matrices, each of them representing the Hamiltonian
+with a different configuration of the noise.
+* `γ` is the switching rate of the noise.
 """
 function quasiHamiltonian(Hamiltonian, γ)::SparseMatrixCSC{Float64,Int64}
     n = size(Hamiltonian[1], 1)
@@ -54,12 +63,6 @@ function quasiHamiltonian(Hamiltonian, γ)::SparseMatrixCSC{Float64,Int64}
     Hq = blockdiag(res...) + kron(-Vnoise(RTN_number,γ), sparse(1.0I, n^2-1, n^2-1))
 
     return Hq
-end
-
-function D(n,i)
-    D = spzeros(2^n,2^n)
-    D[i,i] = 1
-    return D
 end
 
 """
