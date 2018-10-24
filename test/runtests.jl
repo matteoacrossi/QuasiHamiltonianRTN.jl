@@ -16,7 +16,7 @@ end
 @testset "SU(N) generators" begin
     @testset "N = $N" for N = 20:21
         let λ = sun_generators(N)
-            @testset "trless" begin
+            @testset "Traceless" begin
                 @test mapreduce(A -> isapprox(tr(A), 0., atol=eps(Float64) * N), &, λ)
             end
             # Hermitian
