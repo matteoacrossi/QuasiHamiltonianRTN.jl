@@ -6,12 +6,7 @@ using LinearAlgebra
 
 include("../src/SpecialUnitary.jl")
 include("../src/Utilities.jl")
-
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-else
-    using Test
-end
+using Test
 
 @testset "SU(N) generators" begin
     @testset "N = $N" for N = 20:21
