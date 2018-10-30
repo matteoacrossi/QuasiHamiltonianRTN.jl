@@ -8,6 +8,16 @@ include("../src/SpecialUnitary.jl")
 include("../src/Utilities.jl")
 using Test
 
+@testset "Utilities" begin
+    @testset "random_density_matrix" begin
+        ρ = random_density_matrix(4)
+        @test tr(ρ) ≈ 1
+        @test real(tr(ρ^2)) <= 1.
+        @test all(eigvals(ρ) .>= 0)
+    end
+end
+
+
 @testset "SU(N) generators" begin
     @testset "N = $N" for N = 20:21
         let λ = sun_generators(N)
