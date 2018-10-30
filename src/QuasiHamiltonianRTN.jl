@@ -75,7 +75,9 @@ rate γ, starting from an initial Bloch vector ``\\mathbf{r}_0`` of length
 If t is an array of length ``N_T``, returns an ``N_T`` array of Bloch vectors
 at each time instant.
 """
-function evolution(Hq::SparseMatrixCSC, r0::Vector, t; γ=1)
+function evolution(Hq::SparseMatrixCSC, r0::Vector, t; expmpkg=:ExpmV)
+    @assert expmpkg ∈ (:ExpmV, :Expokit) "expmpkg must be either ExpmV or Expokit"
+
     n = size(Hq, 1)
     # n = Nc * Nq
     Nq = length(r0)
@@ -85,13 +87,23 @@ function evolution(Hq::SparseMatrixCSC, r0::Vector, t; γ=1)
 
     v0 = kron(rtnstate, r0)
     y = kron(rtnstate, sparse(1.0I, Nq, Nq))'
-    res = y * ExpmV.expmv(-t, Hq, v0)
 
-    return [res[:,i] for i = 1:size(res,2)]
+    if expmpkg == :ExpmV
+        res = ExpmV.expmv(-t, Hq, v0)
+
+    elseif expmpkg == :Expokit
+        res = Array{Float64}(undef, n, length(t))
+        for (i, ti) in enumerate(t)
+            res[:, i] = Expokit.expmv(-ti, Hq, v0)
+        end
+
+    end
+
+    return y * res
 end
 
 function evolution(Hamiltonian::Array{SparseMatrixCSC{Float64,Int64},1},
-            r0::Vector, t; γ=1)
+            r0::Vector, t; γ=1, expmpkg=:ExpmV)
     n = size(Hamiltonian[1], 1)
     Nc = length(Hamiltonian)
     Nq = length(r0)
@@ -102,7 +114,7 @@ function evolution(Hamiltonian::Array{SparseMatrixCSC{Float64,Int64},1},
 
     Hq = quasiHamiltonian(Hamiltonian, γ)
 
-    return evolution(Hq, r0, t; γ=γ)
+    return evolution(Hq, r0, t; expmpkg=expmpkg)
 end
 
 

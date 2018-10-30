@@ -17,7 +17,6 @@ using Test
     end
 end
 
-
 @testset "SU(N) generators" begin
     @testset "N = $N" for N = 20:21
         let λ = sun_generators(N)
@@ -70,10 +69,10 @@ end
     let tv = range(0, stop=5, length=10), n = 5, ρ0 = localized_state(n, 3)
         rtU = [bloch_vector(unitary_op(Lattice1D.H0(n), t) * ρ0 * unitary_op(Lattice1D.H0(n), t)') for t in tv]
         rtE = evolution(Lattice1D.Hamiltonian(n, .0), bloch_vector(ρ0), tv, γ=0.)
-        @test rtU ≈ rtE
+        @test hcat(rtU...) ≈ rtE
 
         Hq = quasiHamiltonian(Lattice1D.Hamiltonian(n, .0,), 0.)
-        rtEHq = evolution(Hq, bloch_vector(ρ0), tv, γ=0.)
+        rtEHq = evolution(Hq, bloch_vector(ρ0), tv)
 
         @test rtEHq ≈ rtE
     end
