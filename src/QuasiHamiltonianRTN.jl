@@ -36,11 +36,11 @@ function Vnoise(n, γ)
 end
 
 """
-    quasiHamiltonian(Hamiltonian, RTN_number, γ)
+    quasiHamiltonian(Hamiltonian, γ)
 
 Returns the quasi-Hamiltonian ``H_q`` for the Hamiltonian specified by the
-function `H` affected by a number `RTN_number` of RTN fluctuators with switching
-rate γ.
+array of matrices `H`, representing all the possible configurations of the
+Hamiltonian, with switching rate γ.
 
 The quasi-Hamiltonian is defined as in Eq. (20) of Joynt et al.
 This function returns ``-i H_q``, in order to deal with real matrices instead of
@@ -66,7 +66,7 @@ function quasiHamiltonian(Hamiltonian, γ)::SparseMatrixCSC{Float64,Int64}
 end
 
 """
-    evolution(Hq, r0, t; [γ = 1])
+    evolution(Hq, r0, t; [expmpkg=:ExpmV])
 
 Evaluates the dynamics of the system in presence of RTN noise with switching
 rate γ, starting from an initial Bloch vector ``\\mathbf{r}_0`` of length

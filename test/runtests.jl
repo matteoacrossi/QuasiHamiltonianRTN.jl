@@ -9,9 +9,10 @@ include("../src/Utilities.jl")
 using Test
 
 @testset "Utilities" begin
-    @testset "random_density_matrix" begin
+    @testset "random_density_matrix" for i = 1:10
         ρ = random_density_matrix(4)
         @test tr(ρ) ≈ 1
+        @test ρ ≈ ρ'
         @test real(tr(ρ^2)) <= 1.
         @test all(eigvals(ρ) .>= 0)
     end
@@ -75,5 +76,8 @@ end
         rtEHq = evolution(Hq, bloch_vector(ρ0), tv)
 
         @test rtEHq ≈ rtE
+
+        rtEHqEK = evolution(Hq, bloch_vector(ρ0), tv; expmpkg=:Expokit)
+        @test rtEHq ≈ rtEHqEK
     end
 end
