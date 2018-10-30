@@ -41,34 +41,3 @@ space
 function localized_state(n, i)
    sparse([i,n],[i,n],[1,0])
 end
-
-"""
-    probability_current(ρ, A, c)
-
-Returns the probability current for the node ``|c ⟩``,
-defined as the expected value of the operator
-
-``C_c = i\\sum_{⟨j,c⟩}(|j⟩⟨c| - |c⟩⟨j|)``,
-
-where the sum is over the neighbors of the node ``|c⟩``.
-
-```math
- \\text{Tr} [C_c ρ] = - 2 ∑_{j≠c}ℑ(A_{cj}ρ_{cj})
-```
-"""
-function probability_current(ρ::AbstractArray{ComplexF64,2}, A, c::Integer)
-    return - 2 * imag(A[c,:] * ρ[c,:]) # NOTE: ρ[c,c] is real
-end
-
-
-function partial_inner_product(A, Nc, Nq)
-    u = ones(Nc) / sqrt(Nc)
-    M = zeros(Nq, Nq)
-	Id = Matrix{Float64}(I, Nq, Nq)
-    for i=1:Nq
-        for j = 1:Nq
-            M[i,j] = kron(u, Id[:,i])' * A * kron(u, Id[:,j])
-        end
-    end
-    return M
-end
