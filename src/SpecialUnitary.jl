@@ -104,9 +104,15 @@ generators have to be evaluated).
 function igen(f, λ, H)
     n = size(H,1)
     result = spzeros(n^2-1, n^2-1)
-    nimag = Int(floor(n*(n-1)/2))
-    ak = zeros(n^2-1)
-    ak[1:end-nimag] = real([tr(H*lambda) for lambda in λ[1:end-nimag]])
+
+    if eltype(H) <: Real
+        # If the Hamiltonian is real, the imaginary generators do not contribute
+        nimag = Int(floor(n*(n-1)/2))
+        ak = zeros(n^2-1)
+        ak[1:end-nimag] = real([tr(H*lambda) for lambda in λ[1:end-nimag]])
+    else
+        ak = real([tr(H*lambda) for lambda in λ])
+    end
 
     for i = 1:n^2-1
         @inbounds result[i, :] .= f[i] * ak
