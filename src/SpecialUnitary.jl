@@ -131,12 +131,14 @@ function structure_constants(lambda)::Array{SparseArrays.SparseMatrixCSC{Float64
             for k = j+1:Nl
                 @inbounds tmp::Float64 = 1. / 4. * imag(tr(commutator(lambda[i],lambda[j])*lambda[k]))
                 if tmp != 0
-                    @inbounds f[i][j,k] +=  tmp
-                    @inbounds f[i][k,j] -=  tmp
-                    @inbounds f[k][i,j] +=  tmp
-                    @inbounds f[j][i,k] -=  tmp
-                    @inbounds f[j][k,i] +=  tmp
-                    @inbounds f[k][j,i] -=  tmp
+                    @inbounds begin
+                        f[i][j,k] +=  tmp
+                        f[i][k,j] -=  tmp
+                        f[k][i,j] +=  tmp
+                        f[j][i,k] -=  tmp
+                        f[j][k,i] +=  tmp
+                        f[k][j,i] -=  tmp
+                    end
                 end
             end
         end
