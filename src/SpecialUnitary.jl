@@ -95,7 +95,7 @@ end
     igen(f, λ, H)
 
 Returns ``i G(H)``, where G is defined in Eq. (11) of Joynt et al., with the
-structure constants tensor `f` that can be evaluated with `structure_constants(n)`,
+structure constants tensor `f` that can be evaluated with `structure_constants(λ)`,
 and the array of SU(N) generators λ (`sun_generators(n)`).
 
 When providing `f`, the calculations are much faster (especially if many
@@ -116,20 +116,20 @@ function igen(f, λ, H)
 end
 
 """
-    structure_constants(N)
+    structure_constants(λ)
 
 Returns the totally antisymmetric tensor ``i f_{ijk}`` of the structure constants
-of ``SU(N)``, defined as ``f_{ijk} = - 2 i \\text{Tr}([λ_i,λ_j]λ_k)``.
+of the list of generators λ, defined as ``f_{ijk} = - 2 i \\text{Tr}([λ_i,λ_j]λ_k)``.
 
 Notice that the true definition has a factor ``-i``, which we avoid to store only
 a real value.
 """
-function structure_constants(n)::Array{SparseArrays.SparseMatrixCSC{Float64,Int64},3}
-    lambda = sun_generators(n)
-    f = cat([spzeros(Float64, n^2-1,n^2-1) for i = 1:n^2-1], dims=3)
-    for i = 1:n^2-1
-        for j = i+1:n^2-1
-            for k = j+1:n^2-1
+function structure_constants(lambda)::Array{SparseArrays.SparseMatrixCSC{Float64,Int64},3}
+    Nl = length(lambda)
+    f = cat([spzeros(Float64, Nl, Nl) for i = 1:Nl], dims=3)
+    for i = 1:Nl
+        for j = i+1:Nl
+            for k = j+1:Nl
                 @inbounds tmp::Float64 = 1. / 4. * imag(tr(commutator(lambda[i],lambda[j])*lambda[k]))
                 if tmp != 0
                     @inbounds f[i][j,k] +=  tmp

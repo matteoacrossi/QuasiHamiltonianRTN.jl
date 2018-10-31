@@ -38,11 +38,11 @@ end
 
 @testset "SU(N) structure constants" begin
     @testset "SU(2) gives the Levi-Civita tensor" begin
-        @test reduce(&, [structure_constants(2)[i][j,k] == levicivita([i,j,k]) for i=1:3,j=1:3,k=1:3])
+        @test reduce(&, [structure_constants(sun_generators(2))[i][j,k] == levicivita([i,j,k]) for i=1:3,j=1:3,k=1:3])
     end
 
     @testset "[λ[i], λ[j]] = i ∑ f[i][j,k] λ[k] for SU($n)" for n = 7:9
-        let λ = sun_generators(n), f = structure_constants(n)
+        let λ = sun_generators(n), f = structure_constants(λ)
             @test reduce(&,[commutator(λ[i], λ[j]) ≈ 2*im*sum([f[i][j,k]*λ[k] for k = 1:n^2-1])  for i = 1 : n^2-1, j = 1:n^2-1])
         end
     end

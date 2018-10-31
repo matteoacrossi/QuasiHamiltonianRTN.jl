@@ -56,8 +56,8 @@ function quasiHamiltonian(Hamiltonian, γ)::SparseMatrixCSC{Float64,Int64}
     n = size(Hamiltonian[1], 1)
     Nc = length(Hamiltonian)
     RTN_number = Int(log2(Nc))
-    f::Array{SparseArrays.SparseMatrixCSC{Float64,Int64},3} = structure_constants(n)
     λ::Array{SparseArrays.SparseMatrixCSC{Complex{Float64},Int64},1} = sun_generators(n)
+    f::Array{SparseArrays.SparseMatrixCSC{Float64,Int64},3} = structure_constants(λ)
 
     res::Array{SparseArrays.SparseMatrixCSC{Float64,Int64},1} = map(h -> igen(f,λ,h), Hamiltonian)
     Hq = blockdiag(res...) + kron(-Vnoise(RTN_number,γ), sparse(1.0I, n^2-1, n^2-1))
