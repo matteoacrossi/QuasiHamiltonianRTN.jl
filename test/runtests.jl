@@ -81,3 +81,23 @@ end
         @test rtEHq ≈ rtEHqEK
     end
 end
+
+@testset "Noisy evolution" begin
+    let t = 1., longt = 80, n = 5, ρ0 = localized_state(n, 3)
+        H = Lattice1D.Hamiltonian(n, 1.)
+        Hq = quasiHamiltonian(H, 1.)
+
+        # Check that the two expm give similar results
+        rtEHq = evolution(Hq, bloch_vector(ρ0), t)
+        rtEHqEK = evolution(Hq, bloch_vector(ρ0), t; expmpkg=:Expokit)
+
+        @test rtEHq ≈ rtEHqEK
+
+        # Check that the stationary state is the maximally mixed one
+        # (i.e. Bloch vector is zero)
+
+        rtEHq = evolution(Hq, bloch_vector(ρ0), longt)
+        rtEHqEK = evolution(Hq, bloch_vector(ρ0), longt; expmpkg=:Expokit)
+        @test rtEHq ≈ zero(rtEHq) atol=1e-16
+    end
+end
