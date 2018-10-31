@@ -68,12 +68,11 @@ end
 """
     evolution(Hq, r0, t; [expmpkg=:ExpmV])
 
-Evaluates the dynamics of the system in presence of RTN noise with switching
-rate γ, starting from an initial Bloch vector ``\\mathbf{r}_0`` of length
-``N_Q = N^2-1``, where ``N`` is the dimension of the Hilbert space.
+Evaluates the state of the system with quasi-Hamiltonian matrix `Hq`, starting
+from an initial Bloch vector `r0`, at time `t`.
 
-If t is an array of length ``N_T``, returns an ``N_T`` array of Bloch vectors
-at each time instant.
+If `t` is a `StepRangeLen` object of length ```N_t``, return a ``N_r \\times N_t``
+array containing the Bloch vector of the system at each time step as columns.
 """
 function evolution(Hq::SparseMatrixCSC, r0::Vector, t; expmpkg=:ExpmV)
     @assert expmpkg ∈ (:ExpmV, :Expokit) "expmpkg must be either ExpmV or Expokit"
