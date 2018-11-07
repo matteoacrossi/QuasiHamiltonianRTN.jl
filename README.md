@@ -1,37 +1,14 @@
 # QuasiHamiltonianRTN
-[![Build Status](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl.svg?branch=master)](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl) [![codecov](https://codecov.io/gh/matteoacrossi/QuasiHamiltonianRTN.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/matteoacrossi/QuasiHamiltonianRTN.jl)
+[![Build Status](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl.svg?branch=master)](https://travis-ci.org/matteoacrossi/QuasiHamiltonianRTN.jl)
+
+A [Julia][jl] package for evaluating the dynamics of a quantum system affected by one or more sources of [random telegraph noise][rtn] (RTN). It implements a method introduced in [Joynt, R. *et al.*, Int. J. Mod. Phys. B 25, 2115–2134 (2011)][paper], that allows to evaluate numerically, with arbitrary precision, the state of the system at any time instant `t`.
 
 ## Installation
 
-    Pkg.clone("git://github.com/matteoacrossi/QuasiHamiltonianRTN.jl.git")
+QuasiHamiltonianRTN is compatible with Julia 0.7 and newer. To install it, access the package manager REPL with `]` and type
 
-## Example
+     add https://github.com/matteoacrossi/QuasiHamiltonianRTN.jl
 
-This example evaluates the 1D lattice
+## Documentation
 
-```julia
-using QuasiHamiltonianRTN
-using QuasiHamiltonianRTN.Lattice1D
-using PyPlot
-
-n = 10
-r0 = bloch_vector(localized_state(n,floor((n+1)/2)))
-
-t = range(0, stop=10, length=100)
-
-# Noiseless qw
-H = Lattice1D.Hamiltonian(n, 0.)
-r = evolution(H, r0, collect(t), n; γ=0);
-
-imshow([real(diag(density_operator(r[:,i]))) for i in 1:length(t)], cmap="Blues")
-
-# Noisy qw with γ=1
-H = Lattice1D.Hamiltonian(n, 0.5)
-rn = evolution(H, r0, collect(t), n; γ=1.)
-
-imshow([real(diag(density_operator(rn[:,i]))) for i in 1:length(t)], cmap="Blues")
-```
-
-## TODO
-* The MATLAB function [`expmv`](https://github.com/higham/expmv) can evaluate ``exp(t A)`` for an equally spaced interval of t at
-  once (using some optimization). Explore the possibility to do the same with `Expokit.jl`, or, most probably, extend the code in [ExpmV.jl](https://github.com/marcusps/ExpmV.jl) which is the direct port of `expmv`.
+The documentation is available at 
