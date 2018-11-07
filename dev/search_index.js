@@ -29,7 +29,7 @@ var documenterSearchIndex = {"docs": [
     "page": "QuasiHamiltonianRTN.jl",
     "title": "Usage",
     "category": "section",
-    "text": "To use the package, we need a"
+    "text": "To use the package, first construct an array of matrices, in which each element corresponds to the Hamiltonian with a particular realization of the noise sources.For instance, if there are two noise sources, the array will be composed of four Hamiltonians.Once the vector has been defined, say H, we generate the quasi-Hamiltonian matric"
 },
 
 {
