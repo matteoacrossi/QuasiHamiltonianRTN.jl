@@ -33,7 +33,16 @@ of the dynamics without recurring to Montecarlo simulations of the equation \eqr
 
 
 ##  Usage
-To use the package, we need a
+To use the package, first construct an array of matrices, in which each element
+corresponds to the Hamiltonian with a particular realization of the noise sources.
+
+For instance, if there are two noise sources, the array will be composed of four
+Hamiltonians.
+
+Once the vector has been defined, say `H`, we generate the quasi-Hamiltonian
+matric
+
+
 
 ## Reference
 ```@docs

@@ -95,7 +95,6 @@ function evolution(Hq::SparseMatrixCSC, r0::Vector, t; expmpkg=:ExpmV)
         for (i, ti) in enumerate(t)
             res[:, i] = Expokit.expmv(-ti, Hq, v0)
         end
-
     end
 
     return y * res
