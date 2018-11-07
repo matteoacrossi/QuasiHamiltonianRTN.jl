@@ -12,3 +12,8 @@ QuasiHamiltonianRTN is compatible with Julia 0.7 and newer. To install it, acces
 ## Documentation
 
 The documentation is available at 
+
+
+[jl]: julialang.org
+[rtn]: en.wikipedia.org/wiki/Random_telegraph_noise
+[paper]: http://www.worldscientific.com/doi/abs/10.1142/S0217979211100990
